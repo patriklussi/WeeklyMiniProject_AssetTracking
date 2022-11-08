@@ -3,25 +3,32 @@ Console.WriteLine("Welcome to your asset tracker");
 
 
 
+AssetList assetList = new AssetList();
+
 while (true)
 {
     Console.Write("Category: ");
     string data = Console.ReadLine();
+    
+
+
     if(data == "exit")
     {
         break;
     }
+    assetList.AddToAssetList(data);
+   
 }
+Console.ReadLine();
 
 class AssetList
 {
-    List<> assetList = new List<> ();
+    List<Asset> assetList = new List<Asset> ();
+    public void AddToAssetList(string data)
+    {
+        assetList.Add(new Laptop(data));
+    }
 }
-
-
-
-
-
 
 class Asset 
 {
@@ -29,24 +36,25 @@ class Asset
     {
     }
 
-    public Asset(string type, string brand, string model, string office, DateTime purchaseDate, int price, string currency, double localPrice)
+    
+    
+}
+
+class Laptop : Asset
+{
+    public Laptop(string type)
     {
         Type = type;
-        Brand = brand;
-        Model = model;
-        Office = office;
-        PurchaseDate = purchaseDate;
-        Price = price;
-        Currency = currency;
-        LocalPrice = localPrice;
     }
 
-    string Type { get; set; }
-    string Brand { get; set; }
-    string Model { get; set; }
-    string Office { get; set; }
-    DateTime PurchaseDate { get; set; }
-    int Price { get; set; }
-    string Currency { get; set; }
-    double LocalPrice { get; set; }
+    public string Type {get;set;}
+}
+class Phone :Asset
+{
+
+}
+
+class StationaryComputer: Asset
+{
+
 }
