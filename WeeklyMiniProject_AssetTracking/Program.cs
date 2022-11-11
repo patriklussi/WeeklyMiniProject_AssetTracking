@@ -77,7 +77,7 @@ class AssetList
         Console.WriteLine("Hello i do stuff");
         foreach (Asset asset in assetList)
         {
-            Console.WriteLine("Asset category " + asset.AssetType + " " +  asset.Brand + " " + asset.Model + " "+ asset.ExpirationDate.ToString());
+            Console.WriteLine("Asset category " + asset.AssetType + " " +  asset.Brand + " " + asset.Model + " "+ asset.ExpirationDate.ToShortDateString());
         }
     }
 }
