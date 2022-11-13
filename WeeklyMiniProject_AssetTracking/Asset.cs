@@ -15,6 +15,7 @@ namespace WeeklyMiniProject_AssetTracking
         public int PurchasePrice { get; set; }
         public string Office { get; set; }
         public string Currency { get; set; }    
+        public double ConvertedCurrency { get; set; }
     }
-   
+  
 }
