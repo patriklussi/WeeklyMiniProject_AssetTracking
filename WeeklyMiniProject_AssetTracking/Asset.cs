@@ -12,8 +12,9 @@ namespace WeeklyMiniProject_AssetTracking
         public string Brand { get; set; }
         public string Model { get; set; }
         public DateTime ExpirationDate { get; set; }
-        public double PurchasePrice { get; set; }
+        public int PurchasePrice { get; set; }
         public string Office { get; set; }
+        public string Currency { get; set; }    
     }
-
+   
 }

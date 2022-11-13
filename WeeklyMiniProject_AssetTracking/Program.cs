@@ -2,14 +2,12 @@
 using WeeklyMiniProject_AssetTracking;
 
 Console.WriteLine("Welcome to your asset tracker");
-//DateTime exampleDate = new DateTime(1995, 1, 1);
-//DateTime exampleDate2 = DateTime.Now;
+
 AssetList assetList = new AssetList();
-//assetList.AddToAssetList("Laptop", "Benovo", exampleDate, "B11");
-//assetList.AddToAssetList("Laptop", "Lenovo", exampleDate2, "L11");
+
 Console.WriteLine("Enter the type of asset you want to track | You can only track laptops, phones and pcs.\n");
 
-void error(string errorMsg)
+static void error(string errorMsg)
 {
     Console.ForegroundColor = ConsoleColor.Red;
     Console.WriteLine(errorMsg);
@@ -20,19 +18,21 @@ while (true)
 {
     Console.Write("Type of asset: ");
     string type = Console.ReadLine();
+    type = type.Trim().ToLower();
     if (type == "exit")
     {
         break;
     }
-    else if (type == "")
+    else if (!(type == "laptop" || type == "phone" || type == "pc"))
     {
-        error("Field cannot be empty!");
+        error("You can only enter laptop, phone or pc as an asset!");
         continue;
     }
-
+ 
 
     Console.Write("Brand: ");
     string brand = Console.ReadLine();
+    brand = brand.Trim().ToLower();
     if (brand == "exit")
     {
         break;
@@ -45,6 +45,7 @@ while (true)
 
     Console.Write("Model : ");
     string model = Console.ReadLine();
+    model = model.Trim().ToLower();
     if (model == "exit")
     {
         break;
@@ -55,9 +56,18 @@ while (true)
         continue;
     }
 
-    DateTime purchaseDate;
-    Console.Write("Enter date of purchase in format MM/DD/YYYY: ");
-    purchaseDate = DateTime.Parse(Console.ReadLine());
+    DateTime purchaseDate = new DateTime(1995, 1, 1);
+    try
+    {
+        Console.Write("Enter date of purchase in format YYYY/MM/DD: ");
+        purchaseDate = Convert.ToDateTime(Console.ReadLine());
+    }
+    catch (Exception e)
+    {
+        error(e.ToString());
+        continue;
+    }
+
     if (purchaseDate.ToString() == "exit")
     {
         break;
@@ -68,8 +78,18 @@ while (true)
         continue;
     }
 
-    Console.Write("Enter purchase price of asset: ");
-    double purchasePrice = Convert.ToDouble(Console.ReadLine());
+    int purchasePrice = 0;
+    try
+    {
+        Console.Write("Enter purchase price of asset: ");
+        purchasePrice = Convert.ToInt32(Console.ReadLine());
+    }
+    catch (Exception e)
+    {
+        error(e.ToString());
+        continue;
+    }
+
     if (purchasePrice.ToString() == "exit")
     {
         break;
@@ -82,19 +102,18 @@ while (true)
 
     Console.Write("Enter the office which the asset belongs to: ");
     string office = Console.ReadLine();
-
-    if (office  == "exit")
+    office = office.Trim().ToLower();
+    if (office == "exit")
     {
         break;
     }
-    else if (office == "")
+    else if (!(office == "america" || office == "sweden" || type == "germany"))
     {
         error("Field cannot be empty!");
         continue;
     }
 
-
-    assetList.AddToAssetList(type.Trim(), brand.Trim(), purchaseDate, model.Trim(),purchasePrice,office);
+    assetList.AddToAssetList(type, brand, purchaseDate, model, purchasePrice, office);
 
     Console.ForegroundColor = ConsoleColor.Green;
     Console.WriteLine("You have succesfully added your asset to the list");
@@ -112,48 +131,69 @@ class AssetList
     List<Asset> assetList = new List<Asset>();
 
 
-    public void AddToAssetList(string data, string brand, DateTime purchaseDate, string model,double purchasePrice,string office)
+    public void AddToAssetList(string data, string brand, DateTime purchaseDate, string model, int purchasePrice, string office)
     {
-        if (data == "Phone")
+        string currency = string.Empty;
+        currency = DetermineCurrency(currency,office);
+       
+        if (data == "phone")
         {
-            assetList.Add(new Phone(data, brand,purchaseDate,model,purchasePrice,office));
+            assetList.Add(new Phone(data, brand, purchaseDate, model, purchasePrice, office,currency));
         }
-        else if (data == "Laptop")
+        else if (data == "laptop")
         {
-            assetList.Add(new Laptop(data, brand, purchaseDate, model, purchasePrice,office));
+            assetList.Add(new Laptop(data, brand, purchaseDate, model, purchasePrice, office,currency));
         }
-        else if (data == "Stationary computer")
+        else if (data == "pc")
         {
-            assetList.Add(new StationaryComputer(data, brand, purchaseDate, model, purchasePrice,office));
+            assetList.Add(new StationaryComputer(data, brand, purchaseDate, model, purchasePrice, office,currency));
         }
 
     }
 
-
+    private string DetermineCurrency(string currency,string office)
+    {
+        if (office == "america")
+        {
+           currency = "USD";
+        }
+        else if (office == "sweden")
+        {
+           currency = "SEK";
+        }
+        else if (office == "germany")
+        {
+           currency = "EUR";
+        }
+        return currency;
+    }
     public void DisplayList()
     {
 
+        Console.WriteLine("Type".PadRight(10) + "Brand".PadRight(10) + "Model".PadRight(10) + "Office".PadRight(10) + "Purchase date".PadRight(15) + "Price in USD".PadRight(15) + "Currency".PadRight(10));
         foreach (Asset asset in assetList)
         {
             DateTime currentDate = DateTime.Now;
             DateTime expirationDate = asset.ExpirationDate.AddYears(3);
             if (currentDate.AddMonths(-3) >= expirationDate)
             {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("Asset category " + asset.AssetType + " " + asset.Brand + " " + asset.Model + " " + asset.ExpirationDate.ToShortDateString());
-                Console.ResetColor();
+                PrintAsset(asset, ConsoleColor.Red);
             }
             else if (currentDate.AddMonths(-6) >= expirationDate)
             {
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.WriteLine("Asset category " + asset.AssetType + " " + asset.Brand + " " + asset.Model + " " + asset.ExpirationDate.ToShortDateString());
-                Console.ResetColor();
+                PrintAsset(asset, ConsoleColor.Yellow);
             }
-            else Console.WriteLine("Asset category " + asset.AssetType + " " + asset.Brand + " " + asset.Model + " " + asset.ExpirationDate.ToShortDateString());
-
-
-
+            else
+            {
+                PrintAsset(asset, ConsoleColor.White);
+            }
         }
+    }
+    private void PrintAsset(Asset asset, ConsoleColor color)
+    {
+        Console.ForegroundColor = color;
+        Console.WriteLine( asset.AssetType.PadRight(10) +   asset.Brand.PadRight(10) + asset.Model.PadRight(10) + asset.Office.PadRight(10)+ asset.ExpirationDate.ToShortDateString().PadRight(15) +  $"{asset.PurchasePrice}$".PadRight(15) + asset.Currency.PadRight(10));
+        Console.ResetColor();
     }
 }
 
@@ -165,8 +205,7 @@ class Laptop : Asset
     {
     }
 
-
-    public Laptop(string assetType, string brand, DateTime purchaseDate, string model, double purchasePrice,string office)
+    public Laptop(string assetType, string brand, DateTime purchaseDate, string model, int purchasePrice, string office,string currency)
     {
         AssetType = assetType;
         Brand = brand;
@@ -174,6 +213,7 @@ class Laptop : Asset
         Model = model;
         PurchasePrice = purchasePrice;
         Office = office;
+        Currency = currency;
     }
 
 
@@ -181,7 +221,7 @@ class Laptop : Asset
 
 class Phone : Asset
 {
-    public Phone(string assetType, string brand, DateTime purchaseDate, string model, double purchasePrice, string office)
+    public Phone(string assetType, string brand, DateTime purchaseDate, string model, int purchasePrice, string office,string currency)
     {
         AssetType = assetType;
         Brand = brand;
@@ -189,6 +229,7 @@ class Phone : Asset
         Model = model;
         PurchasePrice = purchasePrice;
         Office = office;
+        Currency = currency;
     }
 
 
@@ -196,7 +237,7 @@ class Phone : Asset
 
 class StationaryComputer : Asset
 {
-    public StationaryComputer(string assetType, string brand, DateTime purchaseDate, string model, double purchasePrice, string office)
+    public StationaryComputer(string assetType, string brand, DateTime purchaseDate, string model, int purchasePrice, string office,string currency)
     {
         AssetType = assetType;
         Brand = brand;
@@ -204,6 +245,7 @@ class StationaryComputer : Asset
         Model = model;
         PurchasePrice = purchasePrice;
         Office = office;
+        Currency = currency;
     }
 
 
