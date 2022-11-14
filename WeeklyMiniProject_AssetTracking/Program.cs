@@ -105,6 +105,7 @@ Console.ReadLine();
 class AssetList
 {
     List<Asset> assetList = new List<Asset>();
+   
     public void AddToAssetList(string data, string brand, DateTime purchaseDate, string model, int purchasePrice, string office)
     {
 
@@ -166,9 +167,9 @@ class AssetList
 
     public void DisplayList()
     {
-
+        List<Asset> sortedList = assetList.OrderBy(item => item.Office).ThenBy(item => item.PurchasePrice).ToList(); 
         Console.WriteLine("Type".PadRight(13) + "Brand".PadRight(13) + "Model".PadRight(13) + "Office".PadRight(13) + "Purchase date".PadRight(18) + "Price in USD".PadRight(18) + "Currency".PadRight(13) + "Local price today".PadRight(13));
-        foreach (Asset asset in assetList)
+        foreach (Asset asset in sortedList)
         {
             DateTime currentDate = DateTime.Now;
             DateTime expirationDate = asset.ExpirationDate.AddYears(3);
