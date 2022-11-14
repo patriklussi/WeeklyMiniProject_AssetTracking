@@ -7,9 +7,10 @@ AssetList assetList = new AssetList(); //Aasset list instantiation
 
 
 DateTime exampelDate = new DateTime(2010, 8, 18);
-assetList.AddToAssetList("laptop", "Lenovo", exampelDate, "B11", 555, "germany");
-assetList.AddToAssetList("phone", "Iphone", exampelDate, "B11", 555, "germany");
-assetList.AddToAssetList("pc", "Lenovo", exampelDate, "B11", 555, "germany");
+assetList.AddToAssetList("Laptop", "Lenovo", exampelDate, "B11", 555, "Germany");
+assetList.AddToAssetList("Phone", "Iphone", exampelDate, "B11", 414, "Sweden");
+assetList.AddToAssetList("Pc", "Lenovo", exampelDate, "B11", 7124, "America");
+
 Console.WriteLine("Enter the type of asset you want to track | You can only track laptops, phones and pcs | If you wish to see your asset list type exit \n");
 
 static void error(string errorMsg) // Error function to minimize error code
@@ -23,37 +24,30 @@ while (true)
 {
     Console.Write("Type of asset: ");
     string type = Console.ReadLine();
-   
+
     if (type.Trim().ToLower() == "exit")
     {
         break;
     }
     else if (!(type.Trim().ToLower() == "laptop" || type.Trim().ToLower() == "phone" || type.Trim().ToLower() == "pc"))
     {
-        error("You can only enter laptop, phone or pc as an asset!");
+        error("You can only enter Laptop, Phone or Pc as an asset!");
         continue;
     }
-
-
     Console.Write("Brand: ");
     string brand = Console.ReadLine();
-  
-
     if (brand.Trim().ToLower() == "")
     {
         error("Field cannot be empty!");
         continue;
     }
-
     Console.Write("Model : ");
     string model = Console.ReadLine();
-    
     if (model.Trim().ToLower() == "")
     {
         error("Field cannot be empty!");
         continue;
     }
-
     DateTime purchaseDate = new DateTime(1995, 1, 1);
     try
     {
@@ -78,32 +72,29 @@ while (true)
         error(e.ToString());
         continue;
     }
-
     Console.Write("Enter the office which the asset belongs to: ");
     string office = Console.ReadLine();
-   
-     if (!(office.Trim().ToLower() == "america" || office.Trim().ToLower() == "sweden" || office.Trim().ToLower() == "germany"))
+    if (!(office.Trim().ToLower() == "america" || office.Trim().ToLower() == "sweden" || office.Trim().ToLower() == "germany"))
     {
         error("Field can only contain America, Sweden and Germany!");
         continue;
     }
-
     assetList.AddToAssetList(type, brand, purchaseDate, model, purchasePrice, office);
     Console.ForegroundColor = ConsoleColor.Green;
     Console.WriteLine("You have succesfully added your asset to the list");
     Console.ResetColor();
-
-    Console.Write("If you want to add another asset type restart | If you want to exit and look at your items type exit ");
+    Console.Write("If you want to add another asset type restart | If you want to exit and look at your items type exit \n ");
     string exitText = Console.ReadLine();
-   if(exitText.Trim().ToLower() == "exit")
+    if (exitText.Trim().ToLower() == "exit")
     {
         break;
 
-    } else if(exitText.Trim().ToLower() == "restart")
+    }
+    else if (exitText.Trim().ToLower() == "restart")
     {
         continue;
     }
-   
+
 }
 
 assetList.DisplayList();
@@ -122,7 +113,7 @@ class AssetList
         string currency = string.Empty;
         currency = DetermineCurrency(currency, officeToLower);
         double currenyConverted = convertCurrency(currency, purchasePrice);
-       
+
         if (dataToLower == "phone")
         {
             assetList.Add(new Phone(data, brand, purchaseDate, model, purchasePrice, office, currency, currenyConverted));
@@ -176,7 +167,7 @@ class AssetList
     public void DisplayList()
     {
 
-        Console.WriteLine("Type".PadRight(15) + "Brand".PadRight(15) + "Model".PadRight(15) + "Office".PadRight(15) + "Purchase date".PadRight(20) + "Price in USD".PadRight(20) + "Currency".PadRight(15) + "Local price today".PadRight(15));
+        Console.WriteLine("Type".PadRight(13) + "Brand".PadRight(13) + "Model".PadRight(13) + "Office".PadRight(13) + "Purchase date".PadRight(18) + "Price in USD".PadRight(18) + "Currency".PadRight(13) + "Local price today".PadRight(13));
         foreach (Asset asset in assetList)
         {
             DateTime currentDate = DateTime.Now;
@@ -198,10 +189,11 @@ class AssetList
     private void PrintAsset(Asset asset, ConsoleColor color)
     {
         Console.ForegroundColor = color;
-        Console.WriteLine(asset.AssetType.PadRight(15) + asset.Brand.PadRight(15) + asset.Model.PadRight(15) + asset.Office.PadRight(15) + asset.ExpirationDate.ToShortDateString().PadRight(20) + $"{asset.PurchasePrice}$".PadRight(20) + asset.Currency.PadRight(15) + asset.ConvertedCurrency);
+        Console.WriteLine(asset.AssetType.PadRight(13) + asset.Brand.PadRight(13) + asset.Model.PadRight(13) + asset.Office.PadRight(13) + asset.ExpirationDate.ToShortDateString().PadRight(18) + $"{asset.PurchasePrice}$".PadRight(18) + asset.Currency.PadRight(13) + asset.ConvertedCurrency);
         Console.ResetColor();
     }
 }
+
 
 
 
