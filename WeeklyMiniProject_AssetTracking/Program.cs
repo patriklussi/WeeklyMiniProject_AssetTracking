@@ -4,14 +4,14 @@ using WeeklyMiniProject_AssetTracking;
 Console.WriteLine("Welcome to your asset tracker");
 
 AssetList assetList = new AssetList(); //Aasset list instantiation
-
-
 DateTime exampelDate = new DateTime(2010, 8, 18);
-assetList.AddToAssetList("Laptop", "Lenovo", exampelDate, "B11", 555, "Germany");
+
+assetList.AddToAssetList("Laptop", "Lenovo", exampelDate, "B11", 555, "Germany"); //Example assets to make testing easier
 assetList.AddToAssetList("Phone", "Iphone", exampelDate, "B11", 414, "Sweden");
 assetList.AddToAssetList("Pc", "Lenovo", exampelDate, "B11", 7124, "America");
 
 Console.WriteLine("Enter the type of asset you want to track | You can only track laptops, phones and pcs | If you wish to see your asset list type exit \n");
+
 
 static void error(string errorMsg) // Error function to minimize error code
 {
@@ -80,10 +80,12 @@ while (true)
         continue;
     }
     assetList.AddToAssetList(type, brand, purchaseDate, model, purchasePrice, office);
+
     Console.ForegroundColor = ConsoleColor.Green;
     Console.WriteLine("You have succesfully added your asset to the list");
     Console.ResetColor();
     Console.Write("If you want to add another asset type restart | If you want to exit and look at your items type exit \n ");
+
     string exitText = Console.ReadLine();
     if (exitText.Trim().ToLower() == "exit")
     {
@@ -106,13 +108,12 @@ class AssetList
 {
     List<Asset> assetList = new List<Asset>();
    
-    public void AddToAssetList(string data, string brand, DateTime purchaseDate, string model, int purchasePrice, string office)
+    public void AddToAssetList(string data, string brand, DateTime purchaseDate, string model, int purchasePrice, string office) //Adds info we recieve into the list with appropriate objects based on the type of asset
     {
 
         string dataToLower = data.ToLower();
         string officeToLower = office.ToLower();
-        string currency = string.Empty;
-        currency = DetermineCurrency(currency, officeToLower);
+        string currency = DetermineCurrency( officeToLower);
         double currenyConverted = convertCurrency(currency, purchasePrice);
 
         if (dataToLower == "phone")
@@ -130,8 +131,9 @@ class AssetList
 
     }
 
-    private string DetermineCurrency(string currency, string office)
+    private string DetermineCurrency( string office) //Determines the currency and sets it as a variable
     {
+        string currency = "";
         if (office == "america")
         {
             currency = "USD";
@@ -148,7 +150,7 @@ class AssetList
     }
 
     double convertedPrice;
-    private double convertCurrency(string currency, int purchasePrice)
+    private double convertCurrency(string currency, int purchasePrice) // Converts the price based on the currency
     {
         if (currency == "SEK")
         {
@@ -165,14 +167,18 @@ class AssetList
         return convertedPrice;
     }
 
-    public void DisplayList()
+    public void DisplayList() // Displays list using the printlist function 
     {
         List<Asset> sortedList = assetList.OrderBy(item => item.Office).ThenBy(item => item.PurchasePrice).ToList(); 
+
         Console.WriteLine("Type".PadRight(13) + "Brand".PadRight(13) + "Model".PadRight(13) + "Office".PadRight(13) + "Purchase date".PadRight(18) + "Price in USD".PadRight(18) + "Currency".PadRight(13) + "Local price today".PadRight(13));
+
         foreach (Asset asset in sortedList)
         {
             DateTime currentDate = DateTime.Now;
+
             DateTime expirationDate = asset.ExpirationDate.AddYears(3);
+
             if (currentDate.AddMonths(-3) >= expirationDate)
             {
                 PrintAsset(asset, ConsoleColor.Red);
@@ -187,7 +193,7 @@ class AssetList
             }
         }
     }
-    private void PrintAsset(Asset asset, ConsoleColor color)
+    private void PrintAsset(Asset asset, ConsoleColor color) //Function to print items 
     {
         Console.ForegroundColor = color;
         Console.WriteLine(asset.AssetType.PadRight(13) + asset.Brand.PadRight(13) + asset.Model.PadRight(13) + asset.Office.PadRight(13) + asset.ExpirationDate.ToShortDateString().PadRight(18) + $"{asset.PurchasePrice}$".PadRight(18) + asset.Currency.PadRight(13) + asset.ConvertedCurrency);
@@ -198,7 +204,7 @@ class AssetList
 
 
 
-class Laptop : Asset
+class Laptop : Asset //Child class of asset class
 {
     public Laptop()
     {
@@ -219,7 +225,7 @@ class Laptop : Asset
 
 }
 
-class Phone : Asset
+class Phone : Asset//Child class of asset class
 {
     public Phone(string assetType, string brand, DateTime purchaseDate, string model, int purchasePrice, string office, string currency, double convertedCurrency)
     {
@@ -236,7 +242,7 @@ class Phone : Asset
 
 }
 
-class StationaryComputer : Asset
+class StationaryComputer : Asset//Child class of asset class
 {
     public StationaryComputer(string assetType, string brand, DateTime purchaseDate, string model, int purchasePrice, string office, string currency, double convertedCurrency)
     {
