@@ -1,4 +1,4 @@
-﻿// See https://aka.ms/new-console-template for more information
+﻿
 using WeeklyMiniProject_AssetTracking;
 
 Console.WriteLine("Welcome to your asset tracker");
